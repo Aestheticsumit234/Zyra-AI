@@ -1,62 +1,47 @@
 import { genToken } from "../config/Token.js";
 import User from "../model/user.model.js";
 
-// get the data from frontend
 export const googleAuth = async (req, res) => {
   try {
     const { name, email, photoURL } = req.body;
 
-    const user = await User.findOne({ email });
-    if (user) {
-      return res.status(409).json({
-        success: true,
-        message: "user already exist",
-      });
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = await User.create({ name, email, photoURL });
     }
 
-    const newUser = await User.create({
-      name,
-      email,
-      photoURL,
-    });
+    const token = await genToken(user._id);
 
-    const token = await genToken(newUser._id);
-
-    res.cookie("token", token, {
+    const cookieOptions = {
       httpOnly: true,
       secure: false,
-      sameSite: "strict",
+      sameSite: "lax",
+      path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    };
+
+    res.cookie("token", token, cookieOptions);
 
     res.status(200).json({
       success: true,
-      message: "user created successfully",
-      user: newUser,
+      message: "Login successful",
+      user,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal Server Error! and Google auth Error in googleAuth",
-      error,
-    });
-    console.log(error);
+    res.status(500).json({ success: false, message: "Auth Error", error });
   }
 };
 
-export const logout = async (res, req) => {
+export const logout = async (req, res) => {
   try {
-    await res.clearCookie("token");
-    res.status(200).json({
+    res.clearCookie("token");
+
+    return res.status(200).json({
       success: true,
-      message: "logout successfully",
+      message: "Logged out successfully",
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal Server Error! and Google auth Error in logout",
-      error,
-    });
-    console.log(error);
+    console.error("Logout Error:", error);
+    return res.status(500).json({ success: false });
   }
 };
