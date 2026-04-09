@@ -5,10 +5,13 @@ import { FaGithub } from "react-icons/fa";
 import { FaHireAHelper } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
 import { IoSparkles } from "react-icons/io5";
+import { useDispatch } from "react-redux";
 import { serverUrl } from "../App";
+import { setUserData } from "../redux/userSlice";
 import { auth, githubProvider, provider } from "../utils/firebase";
 
 const Auth = () => {
+  const dispatch = useDispatch();
   const handleGoogleAuth = async () => {
     try {
       const response = await signInWithPopup(auth, provider);
@@ -25,14 +28,28 @@ const Auth = () => {
           withCredentials: true,
         },
       );
-      console.log(result.data);
+      dispatch(setUserData(result.data));
     } catch (error) {}
   };
 
   const handleGithubAuth = async () => {
     try {
       const response = await signInWithPopup(auth, githubProvider);
-      console.log(response);
+      let user = response.user;
+      const { photoURL, email, displayName: name } = user;
+      const result = await axios.post(
+        serverUrl + "/api/auth/googleAuth",
+        {
+          photoURL,
+          email,
+          name,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+      console.log(result.data);
+      dispatch(setUserData(result.data));
     } catch (error) {
       console.log(error);
     }
@@ -53,7 +70,7 @@ const Auth = () => {
         }}
         className="relative w-full max-w-110 z-10"
       >
-        <div className="bg-[#F8FAFC] backdrop-blur-xl p-8 md:p-12 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-white/50 flex flex-col items-center">
+        <div className="bg-[#F8FAFC] backdrop-blur-xl p-8 md:p-12 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/50 flex flex-col items-center">
           <div className="flex items-center gap-3 mb-10 group cursor-pointer">
             <div className="bg-blue-900 text-white rounded-xl p-2.5 shadow-lg shadow-blue-700/20 transition-transform duration-500 group-hover:rotate-360">
               <FaHireAHelper size={27} />
