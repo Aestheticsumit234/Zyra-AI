@@ -4,12 +4,13 @@ import { useState } from "react";
 import { AiTwotoneDollarCircle } from "react-icons/ai";
 import { FaRegUserCircle } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { serverUrl } from "../App";
 import { setUserData } from "../redux/userSlice";
 import AuthModel from "./AuthModel";
 
 const Navbar = () => {
+  const MotionLink = motion(Link);
   const { userData } = useSelector((state) => state.user);
   const [showCreaditPopup, setShowCreaditPopup] = useState(false);
   const [showUserPopup, setShowUserPopup] = useState(false);
@@ -46,7 +47,8 @@ const Navbar = () => {
           transition={{ duration: 0.8, ease: easeOutExpo }}
           className="text-2xl font-light text-white tracking-widest uppercase cursor-pointer"
         >
-          Hirely<span className="text-amber-200/80">.</span>
+          <Link to="/">Hirely</Link>
+          <span className="text-amber-200/80">.</span>
         </motion.div>
 
         <div className="hidden md:flex space-x-12 text-sm font-medium tracking-wide text-neutral-400">
@@ -56,17 +58,18 @@ const Navbar = () => {
             { name: "Pricing", path: "/pricing" },
             { name: "Contact", path: "/contact" },
           ].map((item, i) => (
-            <motion.a
+            <MotionLink
+              key={item.name}
+              to={item.path}
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.1 * i, ease: "easeOut" }}
-              key={item.name}
-              href={item.path}
               className="hover:text-white transition-colors duration-300 relative group"
             >
               {item.name}
+
               <span className="absolute -bottom-1 left-0 w-0 h-px bg-amber-200/50 transition-all duration-500 group-hover:w-full"></span>
-            </motion.a>
+            </MotionLink>
           ))}
         </div>
 
