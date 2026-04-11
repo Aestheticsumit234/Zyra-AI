@@ -20,7 +20,7 @@ const Hero = () => {
   }, []);
 
   return (
-    <section className="pt-48 pb-24 px-6 text-center relative">
+    <section className="pt-32 pb-24 px-6 text-center relative">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-amber-500/5 rounded-full blur-[120px] pointer-events-none"></div>
 
       <div className="max-w-5xl mx-auto relative z-10">

@@ -84,3 +84,9 @@ export const anylizeResume = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
+export const generateQuestions = async (req, res) => {
+  try {
+    const { role, experience, project, skill } = req.body;
+  } catch (error) {}
+};

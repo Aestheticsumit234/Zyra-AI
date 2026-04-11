@@ -22,7 +22,7 @@ const CTA = () => {
 
         <div className="relative z-10">
           <h2 className="text-4xl md:text-5xl font-light text-white mb-8 tracking-tight">
-            Elevate your next <br /> career defining moment.
+            Ready to secure your next milestone?
           </h2>
           <button
             onClick={() => {

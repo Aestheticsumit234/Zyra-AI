@@ -38,7 +38,7 @@ const Navbar = () => {
   const easeOutExpo = [0.16, 1, 0.3, 1];
 
   return (
-    <nav className="fixed top-0 z-50 w-full bg-[#0a0a0a]/70 backdrop-blur-xl border-b border-white/4 transition-all">
+    <nav className="fixed top-0 z-50 w-full bg-[#0a0a0a]/40 backdrop-blur-xl border-b border-white/4 transition-all">
       <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -50,16 +50,21 @@ const Navbar = () => {
         </motion.div>
 
         <div className="hidden md:flex space-x-12 text-sm font-medium tracking-wide text-neutral-400">
-          {["Home", "Features", "Pricing", "Contact"].map((item, i) => (
+          {[
+            { name: "Home", path: "/" },
+            { name: "Features", path: "/features" },
+            { name: "Pricing", path: "/pricing" },
+            { name: "Contact", path: "/contact" },
+          ].map((item, i) => (
             <motion.a
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 * i, ease: easeOutExpo }}
-              key={item}
-              href="#"
+              transition={{ duration: 0.8, delay: 0.1 * i, ease: "easeOut" }}
+              key={item.name}
+              href={item.path}
               className="hover:text-white transition-colors duration-300 relative group"
             >
-              {item}
+              {item.name}
               <span className="absolute -bottom-1 left-0 w-0 h-px bg-amber-200/50 transition-all duration-500 group-hover:w-full"></span>
             </motion.a>
           ))}
