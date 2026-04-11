@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import express from "express";
 import connectDB from "./src/config/db.js";
 import authRouter from "./src/routes/auth.routes.js";
+import interviewRouter from "./src/routes/interview.routes.js";
 import userRouter from "./src/routes/user.routes.js";
 
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
+app.use("/api/interview", interviewRouter);
 
 connectDB();
 app.listen(PORT, () => {

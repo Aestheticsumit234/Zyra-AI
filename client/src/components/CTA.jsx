@@ -31,9 +31,9 @@ const CTA = () => {
                 return;
               }
             }}
-            className="bg-white text-black px-12 py-4 rounded-full font-semibold text-sm uppercase tracking-widest hover:bg-neutral-200 transition-colors duration-500 mt-4"
+            className="bg-white cursor-pointer active:scale-95 text-black px-12 py-4 rounded-full font-semibold text-sm uppercase tracking-widest hover:bg-neutral-200 transition-colors duration-500 mt-4"
           >
-            Unlock Access
+            Unlock Your Potential
           </button>
         </div>
       </motion.div>

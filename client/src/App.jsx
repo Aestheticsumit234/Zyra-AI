@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { Route, Routes } from "react-router-dom";
 import Auth from "./pages/Auth";
 import Home from "./pages/Home";
+import InterviewPage from "./pages/InterviewPage";
 import { setUserData } from "./redux/userSlice";
 
 export const serverUrl = "http://localhost:3000";
@@ -15,7 +16,7 @@ const App = () => {
         const result = await axios.get(serverUrl + "/api/users/current-user", {
           withCredentials: true,
         });
-        console.log(result.data.user);
+        // console.log(result.data.user);
         dispatch(setUserData(result.data.user));
       } catch (error) {
         console.log("error getting user");
@@ -29,6 +30,7 @@ const App = () => {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/auth" element={<Auth />} />
+      <Route path="/interview" element={<InterviewPage />} />
     </Routes>
   );
 };
