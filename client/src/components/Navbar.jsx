@@ -15,6 +15,7 @@ const Navbar = () => {
   const [showCreaditPopup, setShowCreaditPopup] = useState(false);
   const [showUserPopup, setShowUserPopup] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
+  const [imageError, setImgError] = useState(false);
   const Navigate = useNavigate();
   const dispatch = useDispatch();
 

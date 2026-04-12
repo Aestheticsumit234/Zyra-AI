@@ -13,12 +13,16 @@ const questionScheme = new mongoose.Schema({
   },
   answer: {
     type: String,
-    required: true,
+    default: "",
   },
   feedback: {
     type: String,
   },
   score: {
+    type: Number,
+    default: 0,
+  },
+  confidence: {
     type: Number,
     default: 0,
   },
@@ -55,7 +59,6 @@ const interviewSchema = new mongoose.Schema(
     },
     resumeText: {
       type: String,
-      required: true,
     },
     questions: [questionScheme],
     finalScore: {

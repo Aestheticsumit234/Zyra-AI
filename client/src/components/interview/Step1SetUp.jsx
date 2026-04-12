@@ -9,9 +9,14 @@ import {
   FaMicrophone,
   FaUserTie,
 } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
 import { serverUrl } from "../../App";
+import { setUserData } from "../../redux/userSlice";
 
 const Step1SetUp = ({ onStart }) => {
+  const userData = useSelector((state) => state.user.userData);
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const [role, setRole] = useState("");
   const [Experience, setExperience] = useState("");
   const [mode, setMode] = useState("Technical Interview");
@@ -66,6 +71,49 @@ const Step1SetUp = ({ onStart }) => {
   const itemVariants = {
     hidden: { opacity: 0, x: -10 },
     visible: { opacity: 1, x: 0 },
+  };
+
+  const handleStart = async () => {
+    if (!role || !Experience || !mode) {
+      alert("Please fill in all the required fields.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const result = await axios.post(
+        `${serverUrl}/api/interview/generate-questions`,
+        {
+          role,
+          experience: Experience,
+          mode,
+          skills,
+          projects: project,
+          resumeText,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+
+      console.log("Interview Result:", result.data);
+
+      if (userData && result.data.credits !== undefined) {
+        dispatch(setUserData({ ...userData, credits: result.data.credits }));
+      }
+
+      setLoading(false);
+
+      onStart(result.data);
+    } catch (error) {
+      setLoading(false);
+      console.error("Generate Questions Error:", error);
+
+      const errorMessage =
+        error.response?.data?.message ||
+        "Something went wrong. Please try again.";
+      alert(errorMessage);
+    }
   };
 
   return (
@@ -284,7 +332,7 @@ const Step1SetUp = ({ onStart }) => {
               )}
 
               <button
-                type="submit"
+                onClick={handleStart}
                 className="w-full bg-linear-to-r from-[#cda24b] to-[#e8c872] text-black py-3.5 rounded-xl font-bold shadow-lg hover:opacity-90 transition-opacity mt-2 text-sm"
               >
                 Start Interview
