@@ -31,20 +31,44 @@ export const anylizeResume = async (req, res) => {
     const message = [
       {
         role: "system",
-        content: `Extract Structured Data from resume. 
-        Return ONLY a raw JSON object. 
-        Do not use markdown blocks (no backticks, no \`\`\`json).
-        
-        {
-          "role": "string",
-          "experience": "string",
-          "project": ["string"],
-          "skill": ["string"]
-        }`,
+        content: `
+You are an expert resume parser.
+
+Your task is to extract structured candidate data from resume text.
+
+Extraction rules:
+- Extract the candidate's most relevant target job role as "role".
+- Extract total experience as a short readable string as "experience".
+- Extract the most important project names or project descriptions as "project".
+- Extract technical and professional skills as "skill".
+- Use only information clearly present in the resume.
+- Do not invent or assume missing details.
+- If a field is missing, return an empty string or empty array as appropriate.
+- Keep extracted values concise and clean.
+- Remove duplicates from arrays.
+- Prefer normalized, human-readable values.
+
+Output rules:
+- Return ONLY one valid raw JSON object.
+- Do not wrap the JSON in markdown.
+- Do not add explanations, notes, headings, or extra text.
+- All keys must match exactly.
+
+Return exactly this structure:
+{
+  "role": "string",
+  "experience": "string",
+  "project": ["string"],
+  "skill": ["string"]
+}
+    `.trim(),
       },
       {
         role: "user",
-        content: resumeText,
+        content: `
+Resume Text:
+${resumeText}
+    `.trim(),
       },
     ];
 
@@ -136,13 +160,38 @@ export const generateQuestions = async (req, res) => {
     const message = [
       {
         role: "system",
-        content: `You are a real human interviewer. Speak in simple natural English.
-        Generate exactly 5 questions, one per line.
-        Strict Rules:
-        1. No numbering.
-        2. No extra text or explanations.
-        3. One question per line.
-        Difficulty progression: Q1-2 Easy, Q3-4 Medium, Q5 Hard.`,
+        content: `
+You are an experienced human interviewer.
+
+Your job is to generate interview questions in simple, natural, conversational English.
+
+Output requirements:
+- Return exactly 5 interview questions.
+- Each question must be on its own line.
+- Do not add numbering.
+- Do not add bullets.
+- Do not add headings.
+- Do not add explanations.
+- Do not add introductory or closing text.
+- Output plain text only.
+
+Question quality rules:
+- Questions must be relevant to the user's prompt.
+- Questions should sound like a real interviewer is asking them.
+- Keep each question clear, concise, and professional.
+- Avoid repeating the same idea in multiple questions.
+- Avoid overly generic wording when more specific wording is possible.
+
+Difficulty progression:
+- Question 1: Easy
+- Question 2: Easy
+- Question 3: Medium
+- Question 4: Medium
+- Question 5: Hard
+
+Final instruction:
+Return only the 5 questions, with one question per line.
+    `.trim(),
       },
       {
         role: "user",
@@ -249,22 +298,56 @@ export const submitAnswer = async (req, res) => {
     const message = [
       {
         role: "system",
-        content: `You are a professional interviewer. Evaluate the candidate's answer.
-        Score areas (0-10): Confidence, Communication, Correctness.
-        Calculate finalScore as average rounded to nearest whole number.
-        Feedback: 10-15 words, natural human tone.
-        Return ONLY raw JSON:
-        {
-          "confidence": number,
-          "communication": number,
-          "correctness": number, 
-          "finalScore": number,
-          "feedback": "string"
-        }`,
+        content: `
+You are an expert technical interviewer and candidate evaluator.
+
+Your task is to evaluate a candidate's answer to a single interview question.
+
+Scoring rules:
+- Score these 3 categories from 0 to 10 as integers only:
+  1. confidence
+  2. communication
+  3. correctness
+- finalScore must be the rounded average of confidence, communication, and correctness.
+- Be fair, consistent, and realistic.
+- Do not give high scores unless the answer clearly deserves them.
+- If the answer is vague, incomplete, off-topic, or factually weak, reduce the score accordingly.
+- If the answer is empty, irrelevant, or "No response.", assign very low scores.
+
+Feedback rules:
+- feedback must be natural, professional, and human-sounding.
+- Keep feedback between 12 and 20 words.
+- Mention one strength or weakness clearly.
+- Do not use markdown.
+- Do not use bullet points.
+
+Output rules:
+- Return ONLY valid raw JSON.
+- Do not wrap in markdown fences.
+- Do not add explanations, labels, or extra text.
+- All numeric fields must be numbers, not strings.
+
+Return exactly this structure:
+{
+  "confidence": number,
+  "communication": number,
+  "correctness": number,
+  "finalScore": number,
+  "feedback": "string"
+}
+    `.trim(),
       },
       {
         role: "user",
-        content: `Question: ${question.question}\nAnswer: ${answer}`,
+        content: `
+Evaluate the following interview response.
+
+Question:
+${question.question}
+
+Candidate Answer:
+${answer || "No response."}
+    `.trim(),
       },
     ];
 
